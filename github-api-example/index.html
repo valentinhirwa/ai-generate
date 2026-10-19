@@ -36,12 +36,21 @@
 
         // Step 5: convert the reply to JSON and show it on the page
         const user = await response.json();
-        result.innerHTML =
-          "<img src='" + user.avatar_url + "'>" +
-          "<h2>" + (user.name || user.login) + "</h2>" +
-          "<p>Public repos: " + user.public_repos + "</p>" +
-          "<p>Followers: " + user.followers + "</p>" +
-          "<a href='" + user.html_url + "' target='_blank'>Open profile</a>";
+        // textContent is safe: it never runs API data as HTML
+        result.textContent = "";
+        const img = document.createElement("img");
+        img.src = user.avatar_url;
+        const name = document.createElement("h2");
+        name.textContent = user.name || user.login;
+        const repos = document.createElement("p");
+        repos.textContent = "Public repos: " + user.public_repos;
+        const followers = document.createElement("p");
+        followers.textContent = "Followers: " + user.followers;
+        const link = document.createElement("a");
+        link.href = user.html_url;
+        link.target = "_blank";
+        link.textContent = "Open profile";
+        result.append(img, name, repos, followers, link);
       } catch (error) {
         result.textContent = "Network problem: " + error.message;
       }
